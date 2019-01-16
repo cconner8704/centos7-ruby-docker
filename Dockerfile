@@ -1,48 +1,38 @@
 FROM centos:7
 #FROM arm32v7/centos:latest
 #Based on https://tecadmin.net/install-ruby-latest-stable-centos/
+#https://github.com/drecom/docker-centos-ruby/blob/master/Dockerfile
 MAINTAINER Chris Conner <chrism.conner@gmail.com>
 
-ARG ruby_ver=2.5
+ARG RUBY_PATH=/usr/local/
+ARG RUBY_VERSION=2.6.0
+
 RUN set -ex                           \
     && yum install -y epel-release \
+                      python-pip \
+                      net-tools \
+                      bind-utils \
+                      iproute \
+                      vim \
+                      syslinux \
+                      less \
+                      make \
+                      gcc \
+                      git \
+                      openssl-dev \
+                      zlib-devel \
+                      mysql-devel \
+                      redis \
+                      sqlite-devel \
     && yum update -y \
-    && yum install epel-release -y \
-    && yum update -y \
-    && yum install -y python-pip \
-    && yum install -y net-tools \
-    && yum install -y bind-utils \
-    && yum install -y iproute \
-    && yum install -y vim \
-    && yum install -y syslinux \
-    && yum install -y less \
-    && yum install -y gcc-c++ \
-    && yum install -y patch \
-    && yum install -y readline \
-    && yum install -y readline-devel \
-    && yum install -y zlib \
-    && yum install -y zlib-devel \
-    && yum install -y libyaml-devel \
-    && yum install -y libffi-devel \
-    && yum install -y openssl-devel \
-    && yum install -y make \
-    && yum install -y bzip2 \
-    && yum install -y autoconf \
-    && yum install -y automake \
-    && yum install -y libtool \
-    && yum install -y bison \
-#    && yum install -y iconv-devel \
-    && yum install -y sqlite-devel \
     && yum clean -y expire-cache
 
-RUN curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-RUN curl -L get.rvm.io | bash -s stable
+ENV PATH $RUBY_PATH/bin:$PATH
 
-RUN source /etc/profile.d/rvm.sh && rvm reload
+RUN git clone git://github.com/rbenv/ruby-build.git $RUBY_PATH/plugins/ruby-build \
+    && $RUBY_PATH/plugins/ruby-build/install.sh
 
-RUN rvm install $ruby_ver
-
-RUN rvm use $ruby_ver --default
+RUN ruby-build $RUBY_VERSION $RUBY_PATH
 
 # entrypoint
 CMD [ "irb" ]
