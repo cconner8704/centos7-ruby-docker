@@ -31,7 +31,7 @@ RUN set -ex                           \
     && yum install -y automake \
     && yum install -y libtool \
     && yum install -y bison \
-    && yum install -y iconv-devel \
+#    && yum install -y iconv-devel \
     && yum install -y sqlite-devel \
     && yum clean -y expire-cache
 
