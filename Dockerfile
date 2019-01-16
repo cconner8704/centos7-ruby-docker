@@ -24,6 +24,8 @@ RUN set -ex                           \
                       mysql-devel \
                       redis \
                       sqlite-devel \
+                      readline-devel \
+                      bzip2 \
     && yum update -y \
     && yum clean -y expire-cache
 
